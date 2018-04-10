@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.2
+#!/usr/bin/env python3
 '''
 To Do:
 
@@ -71,6 +71,13 @@ def get_args():
                         help = 'Stream length in seconds (default: 30).\
                         If each segment is 10s and duration is set to 30\
                         then 3 segments are downloaded.')
+    parser.add_argument('-a', '--header_auth',
+                        dest = 'header_auth',
+                        default = None,
+                        metavar = '',
+                        help = 'HTTP Header Authorization (default: None).\
+                        ')
+
 
     args = parser.parse_args()
     return args
@@ -78,6 +85,7 @@ def get_args():
 
 def urllize(url):
     ''' returns urllized url '''
+    url = ''.join(url.split('?')[:1])
     return '<a href="{}">{}</a>'.format(url, url)
 
 
@@ -95,7 +103,8 @@ if __name__ == '__main__':
 
     try:
         stream = Stream(args.host, args.url, port=args.port,
-                        timeout=args.timeout, ssl=args.ssl)
+                        timeout=args.timeout, ssl=args.ssl,
+                        header_auth=args.header_auth)
     except StreamError as e:
         print('Critical: {} {}'.format(e.error_str, urllize(e.url)))
         sys.exit(2)

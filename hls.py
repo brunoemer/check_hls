@@ -24,7 +24,7 @@ class Stream():
     ''' A simple HTTP Live streaming interface that allows retrieval of
         playlists (both main and variants) and transport segments. '''
 
-    def __init__(self, host, path, port=None, ssl=False, timeout=10, token=None):
+    def __init__(self, host, path, port=None, ssl=False, timeout=10, token=None, header_auth=None):
         ''' Sets initial connection attributes and retrieves main playlist
         file object. Exception raised for requests beyond timeout in seconds.'''
 
@@ -33,8 +33,13 @@ class Stream():
         proto = 'https' if ssl else 'http'
         self.addr = '{}://{}{}'.format(proto, self.host, self.path)
         self.timeout = timeout
+        self.header_auth = header_auth
         try:
-            self.playlist = urllib.request.urlopen(self.addr, timeout=self.timeout)
+#            self.playlist = urllib.request.urlopen(self.addr, timeout=self.timeout)
+            req = urllib.request.Request(self.addr)
+            if self.header_auth:
+                req.add_header('Authorization', self.header_auth)
+            self.playlist = urllib.request.urlopen(req, timeout=self.timeout)
         except urllib.error.HTTPError:
             raise StreamError('Error retrieving playlist. ', self.addr)
         except urllib.error.URLError:
@@ -66,6 +71,7 @@ class Stream():
                     addr = Stream._build_addr(self.addr, line)
                     try:
                         variant = urllib.request.urlopen(addr, timeout=self.timeout)
+                        
                     except urllib.error.HTTPError:
                         raise StreamError(
                             'Error retrieving variant playlist ',
@@ -146,7 +152,7 @@ class Stream():
         parent domain if necessary. '''
         if not child.startswith('http'):
             if child.startswith('/'):
-                base_name = 'http://{}'.format(parent.split('/')[2])
+                base_name = '{}//{}'.format(parent.split('/')[0], parent.split('/')[2])
             else:
                 base_name = '/'.join(parent.split('/')[:-1])
             child = '{}/{}'.format(base_name, child)
