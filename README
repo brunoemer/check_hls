@@ -2,3 +2,31 @@ check_hls
 
 A simple Nagios plugin to check Apple HTTP Live streaming (HLS). 
 
+
+usage: check_hls.py [-h] -H  -u  [-s] [-p] [-t] [-b [[...]]] [-d] [-a]
+
+    Check an HTTP Live stream for rfc compliance and segment availability
+    within optional response time thresholds.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -H , --host           Address of streaming server
+  -u , --url            URL to retrieve stream
+  -s, --ssl             enable https
+  -p , --port           Port number (default: 80)
+  -t , --timeout        Timeout in sec, for m3u8 not ts (default: 10).
+  -b [ [ ...]], --bandwidths [ [ ...]]
+                        Encoding variants by bandwidth as specified within
+                        #EXT-X-STREAM-INF tag of playlist (default: all)
+  -d , --duration       Stream length in seconds (default: 30). If each
+                        segment is 10s and duration is set to 30 then 3
+                        segments are downloaded.
+  -a , --header_auth    HTTP Header Authorization (default: None).
+
+    Examples:
+
+        check_hls -H example.com -u /path/to/stream
+        check_hls --host example.com -u /path -p 8080 --ssl
+        check_hls -H example.com -u /path -v H3 H5 H8 --duration=60
+        
+
