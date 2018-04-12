@@ -86,7 +86,7 @@ def get_args():
 def urllize(url):
     ''' returns urllized url '''
     url = ''.join(url.split('?')[:1])
-    return '<a href="{}">{}</a>'.format(url, url)
+    return '{}'.format(url)
 
 
 def clean(dir):
