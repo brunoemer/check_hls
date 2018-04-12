@@ -117,8 +117,9 @@ class Stream():
                 file = '{}/{}'.format(temp_dir, line.split('/')[-1])
                 try:
                     urllib.request.urlretrieve(addr, file)
-                except (urllib.error.URLError, ValueError) :
+                except (urllib.error.URLError, ValueError) as e :
                     shutil.rmtree(temp_dir)
+                    #print(e.reason)
                     raise StreamError('Error retrieving segment ', addr)
                 except:
                     shutil.rmtree(temp_dir)

@@ -126,14 +126,14 @@ if __name__ == '__main__':
             try:
                 files.update(stream.retrieve_segments(variant_addr, variant_playlist, duration=args.duration))
             except StreamError as e:
-                print('Critical: {} {}'.format(e.error_str, urllize(e.url)))
-                sys.exit(2)
+                print('Warning: {} {}'.format(e.error_str, urllize(e.url)))
+                sys.exit(1)
     else: # no variants, so get segments for initial playlist
         try:
             files.update(stream.retrieve_segments(stream.addr, playlist, duration=args.duration))
         except StreamError as e:
-            print('Critical: {} {}'.format(e.error_str, urllize(e.url)))
-            sys.exit(2)
+            print('Warning: {} {}'.format(e.error_str, urllize(e.url)))
+            sys.exit(1)
 
     # check file size of each segment
     tmp_dirs = []
